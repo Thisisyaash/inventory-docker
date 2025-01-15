@@ -3,6 +3,7 @@ package com.inventory_management.inventory_management.service;
 import com.inventory_management.inventory_management.model.Product;
 import com.inventory_management.inventory_management.model.ProductStatus;
 import com.inventory_management.inventory_management.repository.ProductRepository;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,13 +48,7 @@ public class ProductServiceIMP implements ProductService{
         productById.setProductName(record.getProductName());
         productById.setDescription(record.getDescription());
         productById.setStock(record.getStock());
-//        if(productById.getStock()>0){
-//            productById.setStatus(ProductStatus.IN_STOCK);
-//        } else  {
-//            productById.setStatus(ProductStatus.SOLD_OUT);
-//            productById.setStock(0);
-//        }
-//        saveProductData(productById);
+        saveProductData(getStatus(productById));
 
         return saveProductData(productById);
     }
@@ -61,5 +56,36 @@ public class ProductServiceIMP implements ProductService{
     @Override
     public Product getProductById(Long id) {
         return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product with id " + id + " is not present"));
+    }
+
+    public String deleteProduct(Long product_id){
+
+        if(getProductById(product_id)!=null){
+            repository.deleteById(product_id);
+            return "product deleted successfully";
+        }else {
+            return "product deletion unsuccessful";
+        }
+    }
+
+    @Override
+    public Product updateStock(Long product_id ,Long itemsSold){
+        Product productById = getProductById(product_id);
+        productById.setStock(productById.getStock()-itemsSold);
+        Product changesStatusRecord = getStatus(productById);
+        System.out.println(changesStatusRecord);
+        repository.save(changesStatusRecord);
+        return changesStatusRecord;
+    }
+
+    public Product getStatus(Product record){
+        if(record.getStock()>0){
+            record.setStatus(ProductStatus.IN_STOCK);
+        } else  {
+            record.setStatus(ProductStatus.SOLD_OUT);
+            record.setStock(0);
+        }
+
+        return record;
     }
 }
