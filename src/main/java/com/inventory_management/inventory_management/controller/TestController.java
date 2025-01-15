@@ -18,10 +18,9 @@ public class TestController {
         return service.getAllProducts();
     }
 
-    @PostMapping("/postdata")
+    @PostMapping("/postProduct")
     public Product postProductsData(@RequestBody Product model) {
         System.out.println(model.toString());
-
         return service.saveProductData(model);
     }
 
@@ -34,4 +33,20 @@ public class TestController {
     public Product updateProductRecord(@RequestBody Product model){
         return service.updateProduct(model);
     }
+
+    @DeleteMapping("/deleteProduct/{product_id}")
+    public String deleteProduct(@PathVariable ("product_id") Long product_id){
+        return service.deleteProduct(product_id);
+    }
+
+    @PutMapping("/itemsSold/{product_id}/{itemsSold}")
+    public Product updateStock(@PathVariable("product_id") Long product_id, @PathVariable ("itemsSold") Long itemsSold){
+        return service.updateStock(product_id,itemsSold) ;
+    }
+
+    @GetMapping("/searchProductById/{product_id}")
+    public Product getProductById(@PathVariable Long product_id){
+        return service.getProductById(product_id);
+    }
+
 }

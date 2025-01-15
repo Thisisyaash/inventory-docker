@@ -20,7 +20,10 @@ public class Product {
     private String description;
 
     @Column(name = "Stock", nullable = false)
-    private long stock;
+    private Long stock;
+
+    @Transient
+    private Long itemsSold;
 
     public void setDate(LocalDate date) {
         this.date = date;
